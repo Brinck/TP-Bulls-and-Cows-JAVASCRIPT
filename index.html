@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Bulls and Cows : GAME</title>
+		<link rel="icon" href="images/nodejs.png" type="image/x-icon"/>
+		<link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+
+
+		<script language="javascript" type="text/javascript">
+
+			var OriPos1, OriPos2, OriPos3, OriPos4; //Variables contenant chaque chiffre du nombre original
+			var heure, minute, seconde; //Variables pour le timer
+			var i; //Variable de déplacemnt à travers le tableau de gauche
+
+			//BUT : Initialisation de i
+			//ENTREE : Pas d'entrée
+			//SORTIE : i initialisé à 0
+			function initI(){
+				i=0;
+			}
+
+			//BUT : Initialisation du timer à 0
+			//ENTREE : Pas d'entrée
+			//SORTIE : Timer initialisé à 0
+			function initTimer(){
+				heure=0;
+				minute=0;
+				seconde=0;
+			}
+
+			//BUT : Lancer le timer
+			//ENTREE : Pas d'entrée
+			//SORTIE : Timer correctement incrémenté
+			function launchTimer(){
+
+				//Secondes
+				if (seconde<60) {
+					seconde += 1;
+				} else {
+					seconde = 0;
+					//Minutes
+					if (minute<60) {
+						minute += 1;
+					//Heures
+					} else {
+						minute = 0;
+						heure += 1;
+					}
+				}
+			}
+
+			//BUT : Afficher le timer correctement incrémenté chaque seconde
+			//ENTREE : Pas d'entrée
+			//SORTIE : Timer incrémenté
+			function showTimer(){
+				launchTimer();
+
+				document.getElementById("Timer").innerHTML=heure+":"+minute+":"+seconde; 
+			}
+
+			//BUT : Vider les cases où l'utilisateur rentre ses chiffres
+			//ENTREE : Pas d'entrée
+			//SORTIE : cases du joueur vidées
+			function cleanChoix(){
+
+				//Variables contenant les choix du joueur
+				document.getElementsByName("Choix")[0].value="";
+				document.getElementsByName("Choix")[1].value="";
+				document.getElementsByName("Choix")[2].value="";
+				document.getElementsByName("Choix")[3].value="";
+			}
+
+			//BUT : Vider les cases de la partie gauche du tableau
+			//ENTREE : Pas d'entrée
+			//SORTIE : Toutes les cases de la partie gauche du tableau vidées
+			function cleanTabLeft(){
+				document.getElementsByName("Demande")[0].value="";
+				document.getElementsByName("Demande")[1].value="";
+				document.getElementsByName("Demande")[2].value="";
+				document.getElementsByName("Demande")[3].value="";
+				document.getElementsByName("Demande")[4].value="";
+				document.getElementsByName("Demande")[5].value="";
+				document.getElementsByName("Demande")[6].value="";
+
+				document.getElementsByName("Existant")[0].value="";
+				document.getElementsByName("Existant")[1].value="";
+				document.getElementsByName("Existant")[2].value="";
+				document.getElementsByName("Existant")[3].value="";
+				document.getElementsByName("Existant")[4].value="";
+				document.getElementsByName("Existant")[5].value="";
+				document.getElementsByName("Existant")[6].value="";
+
+
+				document.getElementsByName("Trouve")[0].value="";
+				document.getElementsByName("Trouve")[1].value="";
+				document.getElementsByName("Trouve")[2].value="";
+				document.getElementsByName("Trouve")[3].value="";
+				document.getElementsByName("Trouve")[4].value="";
+				document.getElementsByName("Trouve")[5].value="";
+				document.getElementsByName("Trouve")[6].value="";
+			}
+
+			//BUT : Générer aléatoirement le nombre original
+			//ENTREE : Pas d'entrée
+			//SORTIE : Nombre original généré aléatoirement
+			function createOriginal(){
+
+				OriPos1 = Math.floor(Math.random()*10);
+
+				do {
+				OriPos2 = Math.floor(Math.random()*10);
+				} while (OriPos1==OriPos2)
+
+				do {
+				OriPos3 = Math.floor(Math.random()*10);
+				} while ((OriPos1==OriPos3)||(OriPos2==OriPos3))
+
+				do{
+				OriPos4 = Math.floor(Math.random()*10);
+				}while ((OriPos1==OriPos4)||(OriPos2==OriPos4)||(OriPos3==OriPos4))
+
+				document.getElementById("NbOriginal").value=OriPos1+""+OriPos2+""+OriPos3+""+OriPos4;
+			}
+
+			//BUT : Vérifie si le joueur a entré des chiffres (qui sont différents) ou non
+			//ENTREE : Pas d'entrée
+			//SORTIE : true si le joueur a bien rentré des chiffres (qui sont différents), sinon retourne false avec un message d'erreur invitant le joueur à refaire un choix
+			function verifValidChoix(){
+
+				//Variables contenant les choix du joueur
+				var Ch1 = document.getElementsByName("Choix")[0].value;
+				var Ch2 = document.getElementsByName("Choix")[1].value;
+				var Ch3 = document.getElementsByName("Choix")[2].value;
+				var Ch4 = document.getElementsByName("Choix")[3].value;
+
+				//Si les choix sont bien des chiffres
+				if (((Ch1<=9) && (Ch1>=0) && (Ch2<=9) && (Ch2>=0) && (Ch3<=9) && (Ch3>=0) && (Ch4<=9) && (Ch4>=0)) && ((Ch1!="") && (Ch1!=" ") && (Ch2!="") && (Ch2!=" ") && (Ch3!="") && (Ch3!=" ") && (Ch4!="") && (Ch4!=" "))) {
+				
+					//Si l'utilisateur entre plusieurs fois un même choix, affiche un message d'erreur
+					if ((Ch1==Ch2)||(Ch1==Ch3)||(Ch1==Ch4)||(Ch2==Ch3)||(Ch2==Ch4)||(Ch3==Ch4)) {
+						//Message d'erreur
+						alert("Veuillez entrer des chiffres différents !");
+						return false;
+					}
+
+
+				//Sinon retourne vrai
+					return true;
+
+				//Si les choix ne sont pas des chiffres, affiche un message d'erreur
+				} else { 
+
+					//Message d'erreur
+					alert("Veuillez entrer des chiffres (différents) !");
+					return false;
+				}
+
+			}
+
+			//BUT : Vérifie si le joueur a trouvé le nombre ou non
+			//ENTREE : Pas d'entrée
+			//SORTIE : true si le joueur a trouvé le nombre, sinon retourne false
+			function checkChoix(){
+
+				//Variables contenant les choix du joueur
+				var Ch1 = document.getElementsByName("Choix")[0].value;
+				var Ch2 = document.getElementsByName("Choix")[1].value;
+				var Ch3 = document.getElementsByName("Choix")[2].value;
+				var Ch4 = document.getElementsByName("Choix")[3].value;
+
+				if ((OriPos4==Ch4) && (OriPos3==Ch3) && (OriPos2==Ch2) && (OriPos1==Ch1)){
+					return true;
+				} else{
+					return false;
+				}
+			}
+
+			//BUT : Affiche le nombre que le joueur propose
+			//ENTREE : Pas d'entrée
+			//SORTIE : Le nombre proposé qui s'affiche à gauche
+			function showDemande(){
+				//Variables contenant les choix du joueur
+				var Ch1 = document.getElementsByName("Choix")[0].value;
+				var Ch2 = document.getElementsByName("Choix")[1].value;
+				var Ch3 = document.getElementsByName("Choix")[2].value;
+				var Ch4 = document.getElementsByName("Choix")[3].value;
+
+				//Affichage du nombre choisi par le joueur à la bonne position
+				document.getElementsByName("Demande")[i].value = Ch1+""+Ch2+""+Ch3+""+Ch4;
+			}
+
+			//BUT : Affiche le nombre de chiffres qui existent parmis ceux proposés
+			//ENTREE : Pas d'entrée
+			//SORTIE : Le nombre de chiffres qui existent parmis ceux proposés par le joueur qui sera affiché dans la partie gauche
+			function showExistant(){
+				//Variables contenant les choix du joueur
+				var Ch1 = document.getElementsByName("Choix")[0].value;
+				var Ch2 = document.getElementsByName("Choix")[1].value;
+				var Ch3 = document.getElementsByName("Choix")[2].value;
+				var Ch4 = document.getElementsByName("Choix")[3].value;
+
+				var NbExistant = 0; //Variable contenant le nombre de lettres existantes parmis celles proposées
+
+				for (var compteur =0; compteur < 4; compteur++) {
+					//Si le choix actuel correspond à une lettre de l'original, on incrémente le nombre de chiffres existants
+					if ((document.getElementsByName("Choix")[compteur].value==OriPos1) || (document.getElementsByName("Choix")[compteur].value==OriPos2) || (document.getElementsByName("Choix")[compteur].value==OriPos3) || (document.getElementsByName("Choix")[compteur].value==OriPos4)){
+
+						//Incrémentation
+						NbExistant += 1;
+					}
+				}
+				//Affichage du nombre de lettres existantes
+				document.getElementsByName("Existant")[i].value = NbExistant;
+			}
+
+			//BUT : Affiche le nombre de chiffres qui sont à la bonne place parmis ceux proposés
+			//ENTREE : Pas d'entrée
+			//SORTIE : Le nombre de chiffres qui existent parmis ceux proposés par le joueur qui sera affiché dans la partie gauche
+			function showTrouve(){
+				//Variables contenant les choix du joueur
+				var Ch1 = document.getElementsByName("Choix")[0].value;
+				var Ch2 = document.getElementsByName("Choix")[1].value;
+				var Ch3 = document.getElementsByName("Choix")[2].value;
+				var Ch4 = document.getElementsByName("Choix")[3].value;
+
+				var NbTrouve = 0; //Variable contenant le nombre de chiffres trouvés
+
+				if (Ch1==OriPos1){
+
+					NbTrouve += 1;
+				}
+
+				if (Ch2==OriPos2){
+
+					NbTrouve += 1;
+				}
+
+				if (Ch3==OriPos3){
+
+					NbTrouve += 1;
+				}
+
+				if (Ch4==OriPos4){
+
+					NbTrouve += 1;
+				}
+
+				//Affichage du nombre choisi par le joueur à la bonne position
+				document.getElementsByName("Trouve")[i].value = NbTrouve;
+			}
+
+			//BUT : Déclencher tous les événements du tour de jeu en cliquant sur le bouton "check"
+			//ENTREE : Pas d'entrée
+			//SORTIE : Le nombre de chiffres trouvés et existants parmis les 4 proposés par le joueur, affiche un message de victoire si le joueur trouve le nombre ou un message de défaite si le joueur ne trouve pas le nombre en 7 essais, affiche le nombre demandé par le joueur, affiche le temps que le joueur a mis pour gagner ou perdre en stoppant le timer, indique le nombre qui était à trouver en cas d'échec ou de victoire, message d'erreur au cas où le joueur se trompe en ne mettant rien ou autre chose qu'un chiffre dans les cases choix, affichage d'un message d'erreur au cas où le joueur met plusieurs fois le même chiffre, incrémentation de i
+			function TourDeJeu(){
+				//Vérification de la validité du choix du joueur
+				if (verifValidChoix()==true){
+					if (checkChoix()==true){
+					//Stopper l'intervalle
+					clearInterval(IncIntervale);
+
+					//Message de victoire
+					alert("Vous avez trouvé le nombre original : "+ OriPos1+""+OriPos2+""+OriPos3+""+OriPos4+" !\nVoici votre temps : "+heure+":"+minute+":"+seconde);
+					//Sinon affiche le nombre proposé par le joueur, le nombre de chiffres à la bonne place et le nombre de chiffres existants en incrémentant i de 1
+					} else {
+						showDemande();
+						showExistant();
+						showTrouve();
+						i+=1;
+					}
+				}
+
+				//Si le joueur a dépassé le nombre de demandes, affiche un message pour lui annoncer qu'il a perdu
+				if (i==7) {
+					//Stopper l'intervalle
+					clearInterval(IncIntervale);
+
+					//Message de victoire
+					alert("Vous avez perdu !\nVoici le nombre original : "+ OriPos1+""+OriPos2+""+OriPos3+""+OriPos4+" !\nVoici votre temps : "+heure+":"+minute+":"+seconde);
+				}
+
+				//Vidage des cases de choix du joueur
+				cleanChoix();
+			}
+
+			//BUT : Début de nouvelle partie
+			//ENTREE : Pas d'entrée
+			//SORTIE : Nouveau nombre à trouver, timer initialisé à 0 et effaçage de la partie gauche du tableau de jeu
+			function newGame(){
+
+				//Vidage des cases
+				cleanChoix();
+				cleanTabLeft();
+
+				//Initialisation du timer
+				initTimer();
+
+				//Initialisation de i
+				initI();
+			
+				//Lancement de l'intervale
+				var IncIntervale=setInterval(showTimer,1000); //Variable d'incrémentation + affichage du timer chaque seconde
+
+				//Création du nombre original
+				createOriginal();
+			}
+		</script>
+
+		<noscript>
+			Désolé, javascript est nécessaire pour continuer.
+		</noscript>
+
+	</head>
+
+	<body>	
+
+		<article>
+
+			<script language="javascript" type="text/javascript">
+				initI();
+			</script>
+
+	  		<!-- TABLEAU PRINCIPAL DU JEU -->
+			<table id="mainTD" border="1" align="center">
+				<caption> Bulls and Cows </caption>
+
+				<tbody>
+					<td>
+						<!-- TABLEAU DEMANDE, EXISTANT ET TROUVE -->
+						<table cellpadding="2" align="center">
+							<tr>
+								<th>Demandé</th>
+								<th>Existants</th>
+								<th>Trouvés</th>
+							</tr>
+
+							<tr>
+       							<td><input type="text" name="Demande" size="4" maxlength="4" value="" disabled></td>
+       							<td><input type="text" name="Existant" size="1" maxlength="1" value="" disabled></td>
+       							<td><input type="text" name="Trouve" size="1" maxlength="1" value="" disabled></td>
+       						</tr>
+
+       						<tr>
+       							<td><input type="text" name="Demande" size="4" maxlength="4" value="" disabled></td>
+       							<td><input type="text" name="Existant" size="1" maxlength="1" value="" disabled></td>
+       							<td><input type="text" name="Trouve" size="1" maxlength="1" value="" disabled></td>
+       						</tr>
+
+       						<tr>
+       							<td><input type="text" name="Demande" size="4" maxlength="4" value="" disabled></td>
+       							<td><input type="text" name="Existant" size="1" maxlength="1" value="" disabled></td>
+       							<td><input type="text" name="Trouve" size="1" maxlength="1" value="" disabled></td>
+       						</tr>
+
+       						<tr>
+       							<td><input type="text" name="Demande" size="4" maxlength="4" value="" disabled></td>
+       							<td><input type="text" name="Existant" size="1" maxlength="1" value="" disabled></td>
+       							<td><input type="text" name="Trouve" size="1" maxlength="1" value="" disabled></td>
+       						</tr>
+
+       						<tr>
+       							<td><input type="text" name="Demande" size="4" maxlength="4" value="" disabled></td>
+       							<td><input type="text" name="Existant" size="1" maxlength="1" value="" disabled></td>
+       							<td><input type="text" name="Trouve" size="1" maxlength="1" value="" disabled></td>
+       						</tr>
+
+       						<tr>
+       							<td><input type="text" name="Demande" size="4" maxlength="4" value="" disabled></td>
+       							<td><input type="text" name="Existant" size="1" maxlength="1" value="" disabled></td>
+       							<td><input type="text" name="Trouve" size="1" maxlength="1" value="" disabled></td>
+       						</tr>
+
+       						<tr>
+       							<td><input type="text" name="Demande" size="4" maxlength="4" value="" disabled></td>
+       							<td><input type="text" name="Existant" size="1" maxlength="1" value="" disabled></td>
+       							<td><input type="text" name="Trouve" size="1" maxlength="1" value="" disabled></td>
+       						</tr>
+						</table>
+					</td>
+
+					<td>
+						<!-- TABLEAU NOMBRES, ORIGINAL, TIMER ET BOUTONS -->
+						<table cellpadding="2" align="center">
+							<!-- ENTREE DU CHOIX DE L'UTILISATEUR -->
+							<tr>
+								<th colspan="4">Entrez un nombre</th>
+							</tr>
+
+							<tr>
+								<td><input type="text" name="Choix" size="1" maxlength="1" value="" autofocus></td>
+								<td><input type="text" name="Choix" size="1" maxlength="1" value=""></td>
+								<td><input type="text" name="Choix" size="1" maxlength="1" value=""></td>
+								<td><input type="text" name="Choix" size="1" maxlength="1" value=""></td>
+							</tr>
+
+							<!-- NOMBRE ORIGINAL -->
+							<tr>
+								<th colspan="4">Original</th>
+							</tr>
+
+							<tr>
+								<td colspan="4"><input type="text" id="NbOriginal" name="Original" size="4" maxlength="4" value="????" disabled></td>
+
+								<script language="javascript" type="text/javascript">
+									//Création du nombre original
+									createOriginal();
+								</script>
+							</tr>
+
+							<!-- TIMER -->
+							<tr>
+								<th colspan="4">Timer</th>
+							</tr>
+
+							<tr>
+								<td id="Timer" colspan="4"></td>
+
+								<script language="javascript" type="text/javascript">
+									//Initialisation du timer
+									initTimer();
+
+									//Lancement de l'intervalle
+									var IncIntervale=setInterval(showTimer,1000); //Variable d'incrémentation + affichage du timer chaque seconde
+		  						</script>
+							</tr>
+
+							<!-- BOUTONS -->
+							<tr>
+								<td colspan="2"><button type="button" onclick="TourDeJeu()">Check</button></td>
+								<td colspan="2"><button type="button" onclick="newGame()">New game</button></td>
+							</tr>
+						</table>
+					</td>
+				</tbody>
+			</table>
+
+		</article>
+
+		<footer>
+			<!-- REGLES -->
+			<p>Le jeu Bulls and Cows est plus connu sous le nom de "MasterMind". L'ordinateur choisi 4 chiffres aléatoirement, qui sont différents les uns des autres (entre 0 et 9). Le joueur a 7 essais maximum pour trouver le nombre caché avec les chiffres placés dans le bon ordre.</p> </br>
+
+			<p>Dans la colonne "Existants" se trouvent le nombre de chiffres qui se trouvent dans le nombre caché parmis ceux que le joueur a proposé, et dans la colonne "Trouvés" les chiffres que le joueur a proposé et qui sont à la bonne place.</p> </br>
+
+			<p>Le joueur doit entrer ses choix dans la partie droite du tableau et cliquer sur "check" quand il désire valider son choix. Il peut également lancer une nouvelle partie en clickant sur "New game".</p> </br>
+
+			<p>Le timer ne sert qu'à montrer le temps que met le joueur pour faire une partie et n'a pas d'impact sur la partie</p> </br>
+
+     		<p>@Etudiant Ludus : Charles ROCHE</p>
+     	</footer>
+
+	</body>
+
+</html>

@@ -1,0 +1,58 @@
+/*
+Theme Name: Bulls and Cows
+Theme URI: BullsandcowsCharles.com
+Author: Charles Roche
+Description: Theme css site web BullsandcowsCharles.com
+Version: 1.0
+License: Jack l'Eventreur
+Licence URI: BullsandcowsCharles.com
+Text Domain: Bulls and Cows
+*/
+
+
+/*Police d'écriture*/
+@font-face{/*ajout de la police alex-brush*/
+    font-family: 'alex-brush';
+    src:url('alex-brush/AlexBrush-Regular.ttf');
+}
+
+/*Police de page par défaut*/
+*{ /*définition de la police et de sa couleur par défaut*/
+    font-family:'Shrikband', cursive, impact, sans-serif;
+    color:black;
+    text-align: center;
+}
+
+
+/*TABLEAUX*/
+caption{
+	    font-family:'alex-brush','Shrikband', cursive, impact, sans-serif;
+	    font-size: 40px;
+
+}
+
+#mainTD, th {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 5px;
+    text-align: center;
+}
+
+
+/*INPUTS*/
+input{
+	text-align: center;
+}
+
+#NbOriginal{
+	color: red;
+	font-size: 100%;
+}
+
+/*BOUTONS*/
+button{
+	width: 100%;
+}
